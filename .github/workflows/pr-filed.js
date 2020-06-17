@@ -1,4 +1,5 @@
 module.exports = ({context, github}) => {
+    (async () => {
   const bot_name = "krnowak-test-bot"
   let time_desc_re = /^\s*(\d+)([wdh])\s*$/
   let date_desc_re = /^\s*(\d{4}-\d{2}-\d{2})\s*$/
@@ -172,4 +173,5 @@ module.exports = ({context, github}) => {
       body: messages.join("\n"),
     })
   }
+    })();
 }
