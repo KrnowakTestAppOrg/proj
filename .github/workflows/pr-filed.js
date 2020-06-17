@@ -2,7 +2,7 @@ module.exports = ({context, github}) => {
   const bot_name = "krnowak-test-bot"
   let time_desc_re = /^\s*(\d+)([wdh])\s*$/
   let date_desc_re = /^\s*(\d{4}-\d{2}-\d{2})\s*$/
-  # parse body for commands
+  // parse body for commands
   const body = context.payload.pull_request.body
   const { data: pr } = await github.pulls.get({
     owner: context.repo.owner,
@@ -22,16 +22,16 @@ module.exports = ({context, github}) => {
   let propagate_branches = {}
   for (let key in s2l_branch_map) {
     propagate_branches[key] = {
-      "available": false, # does the project have this branch?
-      "allowed": false, # is it allowed to propagate to this branch?
-      "specified": false, # was it already specified in the bot command?
+      "available": false, // does the project have this branch?
+      "allowed": false, // is it allowed to propagate to this branch?
+      "specified": false, // was it already specified in the bot command?
     }
   }
   {
     const per_page = 100
     let page = 0
     while (1) {
-      # page numbering is 1-based, so we increment it before doing the call
+      // page numbering is 1-based, so we increment it before doing the call
       page++
       const { data: branches } = await github.repos.listBranches({
         owner: context.repo.owner,
@@ -53,20 +53,20 @@ module.exports = ({context, github}) => {
   switch (target_branch) {
   case "flatcar-master-edge":
     propagate_branches["alpha"].allowed = true
-    # fallthrough
+    // fallthrough
   case "flatcar-master-alpha":
     propagate_branches.push["beta"].allowed = true
-    # fallthrough
+    // fallthrough
   case "flatcar-master-beta":
     propagate_branches.push["stable"].allowed = true
-    # fallthrough
+    // fallthrough
   }
   const lines = body.split("\n")
-  # @<bot>: propagate branch_desc date_spec
-  # @<bot>: ignore
-  # @flatcar-bot: beta 2w, stable 1w
-  # branch_desc: alpha, beta, stable
-  # date_spec: nope, asap, \d+[wdh], yyyy-mm-dd # week, day, hour
+  // @<bot>: propagate branch_desc date_spec
+  // @<bot>: ignore
+  // @flatcar-bot: beta 2w, stable 1w
+  // branch_desc: alpha, beta, stable
+  // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
   const prefix = `@${bot_name}: `
   let messages = []
   let break_out = false
@@ -141,14 +141,14 @@ module.exports = ({context, github}) => {
           }
           let time_unit = ""
           switch (match[2]) {
+          case "m":
+            time_unit = "month"
+            break
           case "w":
             time_unit = "week"
             break
           case "d":
             time_unit = "day"
-            break
-          case "h":
-            time_unit = "hour"
             break
           }
           if (match[1] != 1) {
