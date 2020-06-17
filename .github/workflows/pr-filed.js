@@ -4,7 +4,6 @@ module.exports = ({context, github}) => {
   let time_desc_re = /^\s*(\d+)([wdh])\s*$/
   let date_desc_re = /^\s*(\d{4}-\d{2}-\d{2})\s*$/
   // parse body for commands
-  console.log(`repo.owner: ${context.repo.owner}, repo.repo: ${context.repo.repo}`)
   const body = context.payload.pull_request.body
   const { data: pr } = await github.pulls.get({
     owner: context.repo.owner,
@@ -57,10 +56,10 @@ module.exports = ({context, github}) => {
     propagate_branches["alpha"].allowed = true
     // fallthrough
   case "flatcar-master-alpha":
-    propagate_branches.push["beta"].allowed = true
+    propagate_branches["beta"].allowed = true
     // fallthrough
   case "flatcar-master-beta":
-    propagate_branches.push["stable"].allowed = true
+    propagate_branches["stable"].allowed = true
     // fallthrough
   }
   const lines = body.split("\n")
