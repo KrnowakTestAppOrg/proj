@@ -4,11 +4,11 @@ module.exports = ({context, github}) => {
   let time_desc_re = /^\s*(\d+)([wdh])\s*$/
   let date_desc_re = /^\s*(\d{4}-\d{2}-\d{2})\s*$/
   // parse body for commands
-  console.log(`${context}`)
+  console.log(`repo.owner: ${context.repo.owner}, repo.repo: ${context.repo.repo}`)
   const body = context.payload.pull_request.body
   const { data: pr } = await github.pulls.get({
     owner: context.repo.owner,
-    repo: context.repo,
+    repo: context.repo.repo,
     pull_number: context.payload.pull_request.number,
   })
   let s2l_branch_map = {
@@ -37,7 +37,7 @@ module.exports = ({context, github}) => {
       page++
       const { data: branches } = await github.repos.listBranches({
         owner: context.repo.owner,
-        repo: context.repo,
+        repo: context.repo.repo,
         page: page,
         per_page: per_page,
       })
@@ -169,7 +169,7 @@ module.exports = ({context, github}) => {
     }
     github.issues.createComment({
       owner: context.repo.owner,
-      repo: context.repo,
+      repo: context.repo.repo,
       issue_number: context.payload.pull_request.number,
       body: messages.join("\n"),
     })
