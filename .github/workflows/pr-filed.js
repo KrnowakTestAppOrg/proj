@@ -118,7 +118,7 @@ module.exports = ({context, github}) => {
       }
       if (!propagate_branches[branch_desc].allowed) {
         messages.push(`"${branch_desc}" (${s2l_branch_map[branch_desc]}) in "${period}" is not a valid branch description to propagate to from "${l2s_branch_map[target_branch]}" (${target_branch}). Ignoring.`)
-        contunue
+        continue
       }
       if (propagate_branches[branch_desc].specified) {
         messages.push(`"${branch_desc}" (${s2l_branch_map[branch_desc]}) in "${period}" was already specified once. Ignoring.`)
