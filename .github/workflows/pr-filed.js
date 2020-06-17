@@ -77,7 +77,7 @@ module.exports = ({context, github}) => {
     }
     line = line.slice(prefix.length)
     line = line.trim()
-    const [cmd, ...rest] = line.split(" ")
+    const [cmd, ...rest] = line.split(/\s+/)
     let do_next = false
     switch (cmd) {
     case "ignore":
@@ -99,7 +99,8 @@ module.exports = ({context, github}) => {
     }
     const periods = rest.join(" ").split(",")
     for (let period of periods) {
-      const words = period.split(" ")
+      period = period.trim()
+      const words = period.split(/\s+/)
       if (words.length != 2) {
         messages.push(`"${period}" is not a valid propagation command. Ignoring.`)
         continue
