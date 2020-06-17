@@ -68,7 +68,7 @@ module.exports = ({context, github}) => {
   // @flatcar-bot: beta 2w, stable 1w
   // branch_desc: alpha, beta, stable
   // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
-  const prefix = `@${bot_name}: `
+  const prefix = `@${bot_name}:`
   let messages = []
   let break_out = false
   for (let line of lines) {
@@ -76,6 +76,7 @@ module.exports = ({context, github}) => {
       continue
     }
     line = line.slice(prefix.length)
+    line = line.trim()
     const [cmd, ...rest] = line.split(" ")
     let do_next = false
     switch (cmd) {
