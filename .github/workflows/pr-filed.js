@@ -107,6 +107,8 @@ module.exports = ({context, github}) => {
       }
       const branch_desc = words[0].trim()
       if (!(branch_desc in s2l_branch_map)) {
+        // TODO: get valid branch descriptions from s2l_branch_map,
+        // sort them and format them into a nice string
         messages.push(`"${branch_desc}" in "${period}" is not a valid branch description. Allowed branch descriptions are "alpha", "beta" or "stable". Ignoring.`)
         continue
       }
@@ -115,19 +117,19 @@ module.exports = ({context, github}) => {
         continue
       }
       if (!propagate_branches[branch_desc].allowed) {
-        messages.push(`"${branch_desc}" in "${period}" is not a valid branch description to propagate to from "${l2s_branch_map[target_branch]}" (${target_branch}). Ignoring.`)
+        messages.push(`"${branch_desc}" (${s2l_branch_map[branch_desc]}) in "${period}" is not a valid branch description to propagate to from "${l2s_branch_map[target_branch]}" (${target_branch}). Ignoring.`)
         contunue
       }
       if (propagate_branches[branch_desc].specified) {
-        messages.push(`"${branch_desc}" in "${period}" was already specified once. Ignoring.`)
+        messages.push(`"${branch_desc}" (${s2l_branch_map[branch_desc]}) in "${period}" was already specified once. Ignoring.`)
         continue
       }
       propagate_branches[branch_desc].specified = true
       const time_desc = words[1].trim()
       if (time_desc === "asap") {
-        messages.push(`Will propagate the changes to ${branch_desc} as soon as possible after this PR is merged.`)
+        messages.push(`Will propagate the changes to ${branch_desc} (${s2l_branch_map[branch_desc]}) as soon as possible after this PR is merged.`)
       } else if (time_desc === "nope") {
-        messages.push(`Will not propagate the changes to ${branch_desc}.`)
+        messages.push(`Will not propagate the changes to ${branch_desc} (${s2l_branch_map[branch_desc]}).`)
       } else {
         let match = time_desc.match(time_desc_re)
         if (match === null) {
@@ -136,7 +138,7 @@ module.exports = ({context, github}) => {
             messages.push(`"${time_desc}" in "${period}" is an invalid time description. Should be a number followed by either w (for weeks), d (for days) or h (for hours) or a date in format yyyy-mm-dd. Ignoring.`)
             continue
           }
-          messages.push(`Will cherry pick the commits to ${branch_desc} on ${match[1]}.`)
+          messages.push(`Will cherry pick the commits to ${branch_desc} (${s2l_branch_map[branch_desc]}) on ${match[1]}.`)
         } else {
           if (match.length !== 3) {
             messages.push(`"${time_desc}" in "${period}" is an invalid time description. Should be a number followed by either w (for weeks), d (for days) or h (for hours) or a date in format yyyy-mm-dd. Ignoring.`)
@@ -157,7 +159,7 @@ module.exports = ({context, github}) => {
           if (match[1] != 1) {
             time_unit = `${time_unit}s`
           }
-          messages.push(`Will cherry pick the commits to ${branch_desc} in ${match[1]} ${time_unit} after this PR is merged.`)
+          messages.push(`Will cherry pick the commits to ${branch_desc} (${s2l_branch_map[branch_desc]}) in ${match[1]} ${time_unit} after this PR is merged.`)
         }
       }
     }
