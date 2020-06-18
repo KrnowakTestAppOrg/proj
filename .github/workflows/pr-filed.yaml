@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/github-script@v2
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{secrets.BOTS_PAT}}
           script: |
             const path = require('path')
             const scriptPath = path.resolve('./.github/workflows/pr-filed.js')
