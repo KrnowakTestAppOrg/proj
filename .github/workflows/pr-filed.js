@@ -194,9 +194,9 @@ module.exports = ({context, github}) => {
                 for (let column of columns) {
                     proj_cols.push({"name": column.name, "id": column.id})
                 }
-                stuff[project.name] = {"id": project.id, "cols": proj_cols}
+                stuff.push({"name": project.name, "id": project.id, "cols": proj_cols})
             }
-            console.log("status:", projreply.status, "projects:", JSON.stringify(stuff))
+            console.log("projects:", JSON.stringify(stuff))
         }
         // TODO: make it fail, if there are errors
     })();
