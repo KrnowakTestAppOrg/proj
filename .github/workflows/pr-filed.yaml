@@ -9,7 +9,7 @@ on:
       - flatcar-master-beta
 
 jobs:
-  comment:
+  parse-pr-body:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
