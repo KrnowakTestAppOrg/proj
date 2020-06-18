@@ -146,9 +146,9 @@ module.exports = ({context, github}) => {
                                 console.log(`${time_desc} matched no regexps`)
                                 continue
                             }
-                            const year = parseInt(match[1], 10)
-                            const month = parseInt(match[2], 10)
-                            const day = parseInt(match[3], 10)
+                            const year = parseInt(match[2], 10)
+                            const month = parseInt(match[3], 10)
+                            const day = parseInt(match[4], 10)
                             date = new Date(year, month, day, 12)
                             if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() != day)) {
                                 console.log(`${time_desc} has bogus date (actually ${date.getFullYear()}-${date.getMonth()}-${date.getDate()})`)
