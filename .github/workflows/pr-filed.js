@@ -174,14 +174,14 @@ module.exports = ({context, github}) => {
         })
         // debug
         {
-            const [ data: projects ] = await github.projects.listForRepo({
+            const { data: projects } = await github.projects.listForRepo({
                 owner: "KrnowakTestAppOrg",
                 repo: "central",
                 state: "open",
             })
             let stuff = []
             for (let project of projects) {
-                const [ data: columns ] = await github.projects.listColumns({
+                const { data: columns } = await github.projects.listColumns({
                     project_id: project.id,
                 })
                 let proj_cols = []
