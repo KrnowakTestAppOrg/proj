@@ -225,14 +225,14 @@ module.exports = ({context, github}) => {
                 title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
                 body: body.join("\n"),
             })
-            console.log("issue create reply: ", JSON.stringify(reply))
+            console.log("issue create reply:", reply)
             const issue_id = reply.data.id
             const reply2 = await github.projects.createCard({
                 column_id: central_pending_column_id,
                 content_id: issue_id,
                 content_type: "Issue",
             })
-            console.log("card create reply: ", JSON.stringify(reply2))
+            console.log("card create reply:", reply2)
         }
     })();
 }
