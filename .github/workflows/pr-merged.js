@@ -92,6 +92,7 @@ module.exports = ({context, github}) => {
         }
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
+                console.log(line, "not a command line")
                 continue
             }
             line = line.slice(prefix.length)
@@ -99,27 +100,34 @@ module.exports = ({context, github}) => {
             const [cmd, ...rest] = line.split(/\s+/)
             let do_next = false
             if (cmd === "ignore") {
+                console.log("ignore command spotted")
                 return
             }
             if (cmd === "propagate") {
+                console.log("propagate line spotted")
                 const periods = rest.join(" ").split(",")
                 for (let period of periods) {
                     period = period.trim()
                     const words = period.split(/\s+/)
                     if (words.length != 2) {
+                        console.log("${period} invalid")
                         continue
                     }
                     const branch_desc = words[0].trim()
                     if (!(branch_desc in s2l_branch_map)) {
+                        console.log("${branch_desc} invalid")
                         continue
                     }
                     if (!propagate_branches[branch_desc].available) {
+                        console.log("${branch_desc} unavailable")
                         continue
                     }
                     if (!propagate_branches[branch_desc].allowed) {
+                        console.log("${branch_desc} not allowed")
                         continue
                     }
                     if (propagate_branches[branch_desc].specified) {
+                        console.log("${branch_desc} already specified")
                         continue
                     }
                     propagate_branches[branch_desc].specified = true
@@ -129,12 +137,14 @@ module.exports = ({context, github}) => {
                     if (time_desc === "asap") {
                         // TODO: file PRs immediately?
                     } else if (time_desc === "nope") {
+                        console.log("${branch_desc} not to be propagated")
                         continue
                     } else {
                         let match = time_desc.match(time_desc_re)
                         if (match === null) {
                             match = time_desc.match(date_desc_re)
                             if (match === null || match.length !== 5) {
+                                console.log("${time_desc} matched no regexps")
                                 continue
                             }
                             const year = parseInt(match[1], 10)
@@ -142,10 +152,12 @@ module.exports = ({context, github}) => {
                             const day = parseInt(match[3], 10)
                             date = new Date(year, month, day, 12)
                             if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() != day)) {
+                                console.log("${time_desc} has bogus date")
                                 continue
                             }
                         } else {
                             if (match.length !== 3) {
+                                console.log("${time_desc} short desc invalid?")
                                 continue
                             }
                             switch (match[2]) {
@@ -161,6 +173,7 @@ module.exports = ({context, github}) => {
                             }
                         }
                     }
+                    console.log("pushing ${s2l_branch_map[branch_desc]} and ${date}")
                     issues.branches.push({
                         name: s2l_branch_map[branch_desc],
                         date: date,
