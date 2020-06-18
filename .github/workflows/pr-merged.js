@@ -98,7 +98,6 @@ module.exports = ({context, github}) => {
             line = line.slice(prefix.length)
             line = line.trim()
             const [cmd, ...rest] = line.split(/\s+/)
-            let do_next = false
             if (cmd === "ignore") {
                 console.log("ignore command spotted")
                 return
