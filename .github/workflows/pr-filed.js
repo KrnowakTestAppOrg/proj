@@ -182,13 +182,8 @@ module.exports = ({context, github}) => {
                 per_page: 100,
             })
             let stuff = []
-            const projreply2 = await github.projects.listForOrg({
-                owner: "KrnowakTestAppOrg",
-                state: "all",
-                page: 1,
-                per_page: 100,
-            })
-            let projects = [...projreply.data, ...projreply2.data]
+            let projects = projreply.data
+            console.log("reply:", projreply)
             for (let project of projects) {
                 const { data: columns } = await github.projects.listColumns({
                     project_id: project.id,
