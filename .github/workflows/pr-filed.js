@@ -177,11 +177,18 @@ module.exports = ({context, github}) => {
             const projreply = await github.projects.listForRepo({
                 owner: "KrnowakTestAppOrg",
                 repo: "central",
+                state: "all",
                 page: 1,
                 per_page: 100,
             })
-            let projects = projreply.data
             let stuff = []
+            const projreply2 = await github.projects.listForOrg({
+                owner: "KrnowakTestAppOrg",
+                state: "all",
+                page: 1,
+                per_page: 100,
+            })
+            let projects = [...projreply.data, ...projreply2.data]
             for (let project of projects) {
                 const { data: columns } = await github.projects.listColumns({
                     project_id: project.id,
@@ -194,7 +201,7 @@ module.exports = ({context, github}) => {
                 }
                 stuff[project.name] = {"id": project.id, "cols": proj_cols}
             }
-            console.log("status:", projreply.status, "projects:", JSON.stringify(stuff))
+            console.log("status:", projreply.status, "status2:", projreply2.status, "projects:", JSON.stringify(stuff))
         }
         // TODO: make it fail, if there are errors
     })();
