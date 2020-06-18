@@ -126,7 +126,7 @@ module.exports = ({context, github}) => {
                             const year = parseInt(match[2], 10)
                             const month = parseInt(match[3], 10)
                             const day = parseInt(match[4], 10)
-                            date = Date.new(year, month, day)
+                            date = new Date(year, month, day)
                             if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() != day)) {
                                 messages.push(`"${time_desc}" in "${period}" is an invalid date. It resulted in ${date.getFullYear()}-${date.getMonth()}-${date.getDate()}. Ignoring.`)
                                 continue
