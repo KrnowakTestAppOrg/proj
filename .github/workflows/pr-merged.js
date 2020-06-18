@@ -215,7 +215,7 @@ module.exports = ({context, github}) => {
                 `repo: ${issues.repo}`,
                 `original-pr: ${issues.pr}`,
                 `branch: ${branch.name}`,
-                `date: ${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`,
+                `date: ${branch.date.getFullYear()}-${branch.date.getMonth()}-${branch.date.getDate()}`,
                 `commits:`,
                 ...issues.commits,
             ]
