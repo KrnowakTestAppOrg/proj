@@ -196,7 +196,7 @@ module.exports = ({context, github}) => {
                 }
                 stuff[project.name] = {"id": project.id, "cols": proj_cols}
             }
-            console.log("status:", projreply.status, "status2:", projreply2.status, "projects:", JSON.stringify(stuff))
+            console.log("status:", projreply.status, "projects:", JSON.stringify(stuff))
         }
         // TODO: make it fail, if there are errors
     })();
