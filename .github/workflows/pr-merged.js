@@ -11,6 +11,7 @@ module.exports = ({context, github}) => {
             pull_number: context.payload.pull_request.number,
         })
         if (mergedStatus !== 204) {
+            console.log("PR closed (status: ${mergedStatus}), skipping")
             // PR got closed, not merged. Nothing to do.
             return
         }
@@ -168,6 +169,7 @@ module.exports = ({context, github}) => {
             }
         }
         if (issues.branches.length === 0) {
+            console.log("no branches to push to, skipping")
             return
         }
         {
@@ -194,6 +196,7 @@ module.exports = ({context, github}) => {
                 }
             }
         }
+        console.log("commits: ", JSON.stringify(issues.commits))
         for (let branch of issues.branches) {
             let body = [
                 `owner: ${issues.owner}`,
@@ -204,17 +207,20 @@ module.exports = ({context, github}) => {
                 `commits:`,
                 ...issues.commits,
             ]
-            const { data: issue } = await github.issues.create({
+            const reply = await github.issues.create({
                 owner: central_repo_owner,
                 repo: central_repo_repo,
                 title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
                 body: body.join("\n"),
             })
-            await github.projects.createCard({
+            console.log("issue create reply: ", JSON.stringify(reply))
+            const issue_id = reply.data.id
+            const reply2 = await github.projects.createCard({
                 column_id: central_pending_column_id,
-                content_id: issue.id,
+                content_id: issue_id,
                 content_type: "Issue",
             })
+            console.log("card create reply: ", JSON.stringify(reply2))
         }
     })();
 }
