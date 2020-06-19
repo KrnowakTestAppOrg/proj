@@ -2,7 +2,7 @@ module.exports = ({context, github}) => {
     (async () => {
         const bot_name = "krnowak-test-bot"
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
-        let date_desc_re = /^\s*((\d{4})-(\d{2})-(\d{2}))\s*$/
+        let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
         // parse body for commands
         const body = context.payload.pull_request.body
         const { data: pr } = await github.pulls.get({
