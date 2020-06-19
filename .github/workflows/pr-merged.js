@@ -108,7 +108,7 @@ module.exports = ({context, github}) => {
                 for (let period of periods) {
                     period = period.trim()
                     const words = period.split(/\s+/)
-                    if (words.length != 2) {
+                    if (words.length !== 2) {
                         console.log(`${period} invalid`)
                         continue
                     }
@@ -150,7 +150,7 @@ module.exports = ({context, github}) => {
                             const month = parseInt(match[3], 10)
                             const day = parseInt(match[4], 10)
                             date = new Date(year, month, day, 12)
-                            if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() != day)) {
+                            if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() !== day)) {
                                 console.log(`${time_desc} has bogus date (actually ${date.getFullYear()}-${date.getMonth()}-${date.getDate()})`)
                                 continue
                             }

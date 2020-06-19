@@ -86,7 +86,7 @@ module.exports = ({context, github}) => {
                 for (let period of periods) {
                     period = period.trim()
                     const words = period.split(/\s+/)
-                    if (words.length != 2) {
+                    if (words.length !== 2) {
                         messages.push(`"${period}" is not a valid propagation command. Ignoring.`)
                         continue
                     }
@@ -127,7 +127,7 @@ module.exports = ({context, github}) => {
                             const month = parseInt(match[3], 10)
                             const day = parseInt(match[4], 10)
                             date = new Date(year, month, day, 12)
-                            if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() != day)) {
+                            if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() !== day)) {
                                 messages.push(`"${time_desc}" in "${period}" is an invalid date. It resulted in ${date.getFullYear()}-${date.getMonth()}-${date.getDate()}. Ignoring.`)
                                 continue
                             }
@@ -149,7 +149,7 @@ module.exports = ({context, github}) => {
                                 time_unit = "day"
                                 break
                             }
-                            if (match[1] != 1) {
+                            if (match[1] !== 1) {
                                 time_unit = `${time_unit}s`
                             }
                             messages.push(`Will cherry pick the commits to ${branch_desc} (${s2l_branch_map[branch_desc]}) in ${match[1]} ${time_unit} after this PR is merged.`)
