@@ -149,9 +149,11 @@ module.exports = ({context, github}) => {
                             const year = parseInt(match[2], 10)
                             const month = parseInt(match[3], 10)
                             const day = parseInt(match[4], 10)
-                            date = new Date(year, month, day, 12)
-                            if ((date.getFullYear() !== year) || (date.getMonth() !== month) || (date.getDate() !== day)) {
-                                console.log(`${time_desc} has bogus date (actually ${date.getFullYear()}-${date.getMonth()}-${date.getDate()})`)
+                            // months are zero-based in Date, but we
+                            // use 1-based in our messages
+                            date = new Date(year, month-1, day, 12)
+                            if ((date.getFullYear() !== year) || (date.getMonth() !== month-1) || (date.getDate() !== day)) {
+                                console.log(`${time_desc} has bogus date (actually ${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()})`)
                                 continue
                             }
                         } else {
@@ -215,7 +217,7 @@ module.exports = ({context, github}) => {
                 `repo: ${issues.repo}`,
                 `original-pr: ${issues.pr}`,
                 `branch: ${branch.name}`,
-                `date: ${branch.date.getFullYear()}-${branch.date.getMonth()}-${branch.date.getDate()}`,
+                `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
                 `commits:`,
                 ...issues.commits,
             ]
