@@ -228,7 +228,7 @@ module.exports = ({context, github}) => {
             console.log("issue create reply:", reply)
             const reply2 = await github.projects.createCard({
                 column_id: central_pending_column_id,
-                content_id: reply.data.number,
+                content_id: reply.data.id,
                 content_type: "Issue",
             })
             console.log("card create reply:", reply2)
