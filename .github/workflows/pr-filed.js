@@ -3,6 +3,7 @@ module.exports = ({context, github}) => {
         const bot_name = "krnowak-test-bot"
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
+        let issue_number_re = /^\s*(\d+)\s*$/
         // parse body for commands
         const body = context.payload.pull_request.body
         const { data: pr } = await github.pulls.get({
@@ -66,9 +67,11 @@ module.exports = ({context, github}) => {
         const lines = body.split("\n")
         // @<bot>: propagate branch_desc date_spec
         // @<bot>: ignore
-        // @flatcar-bot: beta 2w, stable 1w
+        // @<bot>: close issue_number
+        //
         // branch_desc: alpha, beta, stable
         // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
+        // issue_number: \d+
         const prefix = `@${bot_name}:`
         let messages = []
         for (let line of lines) {
@@ -87,11 +90,12 @@ module.exports = ({context, github}) => {
                     messages.push(`expected only a number after "close" command in "${line}"`)
                     continue
                 }
-                const issue_number = rest[0]
-                if (isNaN(issue_number)) {
-                    messages.push(`"${issue_number}" in "${line}" is not a number`)
+                let match = rest[0].match(issue_number_re)
+                if (match === nil || match.length !== 2) {
+                    messages.push(`"${issue_number}" in "${line}" is not a valid issue number`)
                     continue
                 }
+                const issue_number = match[1]
                 messages.push(`Will close ${central_repo_owner}/${central_repo_repo}#${issue_number}`)
                 continue
             }

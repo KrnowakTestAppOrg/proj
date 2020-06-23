@@ -17,6 +17,7 @@ module.exports = ({context, github}) => {
         }
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
         let date_desc_re = /^\s*((\d{4})-(\d{1,2})-(\d{1,2}))\s*$/
+        let issue_number_re = /^\s*(\d+)\s*$/
         // parse body for commands
         const body = context.payload.pull_request.body
         const { data: pr } = await github.pulls.get({
@@ -108,11 +109,12 @@ module.exports = ({context, github}) => {
                     console.log(`close command invalid`)
                     continue
                 }
-                const issue_number = rest[0]
-                if (isNaN(issue_number)) {
+                let match = rest[0].match(issue_number_re)
+                if (match === nil || match.length !== 2) {
                     console.log(`"${issue_number}" in close command is not a number`)
                     continue
                 }
+                const issue_number = match[1]
                 closings.push(issue_number)
                 continue
             }
