@@ -101,7 +101,6 @@ module.exports = ({context, github}) => {
         let propagation_mixed_warned = false
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
-                console.log(line, "not a command line")
                 continue
             }
             line = line.slice(prefix.length)
@@ -211,7 +210,6 @@ module.exports = ({context, github}) => {
                             }
                         }
                     }
-                    console.log(`pushing ${s2l_branch_map[branch_desc]} and ${date}`)
                     issues.branches.push({
                         name: s2l_branch_map[branch_desc],
                         date: date,
