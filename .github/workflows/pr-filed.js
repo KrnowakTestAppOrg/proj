@@ -174,32 +174,6 @@ module.exports = ({context, github}) => {
             issue_number: context.payload.pull_request.number,
             body: messages.join("\n"),
         })
-        // debug
-        {
-            const projreply = await github.projects.listForRepo({
-                owner: "KrnowakTestAppOrg",
-                repo: "central",
-                state: "all",
-                page: 1,
-                per_page: 100,
-            })
-            let stuff = []
-            let projects = projreply.data
-            console.log("reply:", projreply)
-            for (let project of projects) {
-                const { data: columns } = await github.projects.listColumns({
-                    project_id: project.id,
-                    page: 1,
-                    per_page: 100,
-                })
-                let proj_cols = []
-                for (let column of columns) {
-                    proj_cols.push({"name": column.name, "id": column.id})
-                }
-                stuff.push({"name": project.name, "id": project.id, "cols": proj_cols})
-            }
-            console.log("projects:", JSON.stringify(stuff))
-        }
         // TODO: make it fail, if there are errors
     })();
 }
