@@ -66,7 +66,7 @@ module.exports = ({context, github}) => {
         }
         const lines = body.split("\n")
         // @<bot>: propagate branch_desc date_spec
-        // @<bot>: ignore
+        // @<bot>: no-propagate
         // @<bot>: close issue_number
         //
         // branch_desc: alpha, beta, stable
@@ -74,6 +74,11 @@ module.exports = ({context, github}) => {
         // issue_number: \d+
         const prefix = `@${bot_name}:`
         let messages = []
+        const ps_unknown = 0
+        const ps_no = 1
+        const ps_yes = 2
+        let propagation_status = ps_unknown
+        let propagation_mixed_warned = false
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
                 continue
@@ -82,8 +87,16 @@ module.exports = ({context, github}) => {
             line = line.trim()
             const [cmd, ...rest] = line.split(/\s+/)
             let do_next = false
-            if (cmd === "ignore") {
-                return
+            if (cmd === "no-propagate") {
+                if propagation_status === ps_yes {
+                    if (!propagation_mixed_warned) {
+                        messages.push('mixed propagation commands (both "propagate" and "no-propagate" in the PR body')
+                        propagation_mixed_warned = true
+                    }
+                    continue
+                }
+                propagation_status = ps_no
+                continue
             }
             if (cmd === "close") {
                 if (rest.length !== 1) {
@@ -100,6 +113,14 @@ module.exports = ({context, github}) => {
                 continue
             }
             if (cmd === "propagate") {
+                if propagation_status === ps_no {
+                    if (!propagation_mixed_warned) {
+                        messages.push('mixed propagation commands (both "propagate" and "no-propagate" in the PR body')
+                        propagation_mixed_warned = true
+                    }
+                    continue
+                }
+                propagation_status = ps_yes
                 const periods = rest.join(" ").split(",")
                 for (let period of periods) {
                     period = period.trim()
@@ -180,17 +201,21 @@ module.exports = ({context, github}) => {
             }
             messages.push(`Unknown command "${cmd}" in line "${line}". Ignoring.`)
         }
-        for (let branch_desc in propagate_branches) {
-            if (propagate_branches[branch_desc].available && propagate_branches[branch_desc].allowed && !propagate_branches[branch_desc].specified) {
-                messages.push(`Did not specify the propagation to "${branch_desc}" (${s2l_branch_map[branch_desc]}).`)
+        if (propagation_status === ps_yes) {
+            for (let branch_desc in propagate_branches) {
+                if (propagate_branches[branch_desc].available && propagate_branches[branch_desc].allowed && !propagate_branches[branch_desc].specified) {
+                    messages.push(`Did not specify the propagation to "${branch_desc}" (${s2l_branch_map[branch_desc]}).`)
+                }
             }
         }
-        await github.issues.createComment({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.payload.pull_request.number,
-            body: messages.join("\n"),
-        })
+        if (messages.length > 0) {
+            await github.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: messages.join("\n"),
+            })
+        }
         // TODO: make it fail, if there are errors
     })();
 }

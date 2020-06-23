@@ -79,10 +79,12 @@ module.exports = ({context, github}) => {
         }
         const lines = body.split("\n")
         // @<bot>: propagate branch_desc date_spec
-        // @<bot>: ignore
-        // @flatcar-bot: beta 2w, stable 1w
+        // @<bot>: no-propagate
+        // @<bot>: close issue_number
+        //
         // branch_desc: alpha, beta, stable
         // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
+        // issue_number: \d+
         const prefix = `@${bot_name}:`
         let issues = {
             owner: context.repo.owner,
@@ -92,6 +94,10 @@ module.exports = ({context, github}) => {
             commits: [],
         }
         let closings = []
+        const ps_unknown = 0
+        const ps_no = 1
+        const ps_yes = 2
+        let propagation_status = ps_unknown
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
                 console.log(line, "not a command line")
@@ -100,9 +106,13 @@ module.exports = ({context, github}) => {
             line = line.slice(prefix.length)
             line = line.trim()
             const [cmd, ...rest] = line.split(/\s+/)
-            if (cmd === "ignore") {
-                console.log("ignore command spotted")
-                return
+            if (cmd === "no-propagate") {
+                if propagation_status === ps_yes {
+                    console.log("mixed propagation commands")
+                    continue
+                }
+                propagation_status = ps_no
+                continue
             }
             if (cmd === "close") {
                 if (rest.length !== 1) {
@@ -119,7 +129,11 @@ module.exports = ({context, github}) => {
                 continue
             }
             if (cmd === "propagate") {
-                console.log("propagate line spotted")
+                if propagation_status === ps_no {
+                    console.log("mixed propagation commands")
+                    continue
+                }
+                propagation_status = ps_yes
                 const periods = rest.join(" ").split(",")
                 for (let period of periods) {
                     period = period.trim()
