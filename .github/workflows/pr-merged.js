@@ -124,7 +124,7 @@ module.exports = ({context, github}) => {
                     continue
                 }
                 let match = rest[0].match(issue_number_re)
-                if (match === nil || match.length !== 2) {
+                if (match === null || match.length !== 2) {
                     console.log(`"${issue_number}" in close command is not a number`)
                     continue
                 }

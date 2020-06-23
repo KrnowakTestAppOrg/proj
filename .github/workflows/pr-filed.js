@@ -104,7 +104,7 @@ module.exports = ({context, github}) => {
                     continue
                 }
                 let match = rest[0].match(issue_number_re)
-                if (match === nil || match.length !== 2) {
+                if (match === null || match.length !== 2) {
                     messages.push(`"${issue_number}" in "${line}" is not a valid issue number`)
                     continue
                 }
