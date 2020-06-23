@@ -81,7 +81,8 @@ module.exports = ({context, github}) => {
             let do_next = false
             if (cmd === "ignore") {
                 return
-            } else if (cmd === "propagate") {
+            }
+            if (cmd === "propagate") {
                 const periods = rest.join(" ").split(",")
                 for (let period of periods) {
                     period = period.trim()
@@ -158,10 +159,9 @@ module.exports = ({context, github}) => {
                         }
                     }
                 }
-            } else {
-                messages.push(`Unknown command "${cmd}" in line "${line}". Ignoring.`)
                 continue
             }
+            messages.push(`Unknown command "${cmd}" in line "${line}". Ignoring.`)
         }
         for (let branch_desc in propagate_branches) {
             if (propagate_branches[branch_desc].available && propagate_branches[branch_desc].allowed && !propagate_branches[branch_desc].specified) {

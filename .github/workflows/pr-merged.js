@@ -180,13 +180,10 @@ module.exports = ({context, github}) => {
                         date: date,
                     })
                 }
+                continue
             }
         }
-        if (issues.branches.length === 0) {
-            console.log("no branches to push to, skipping")
-            return
-        }
-        {
+        if (issues.branches.length > 0) {
             let page = 0
             let per_page = 100
             while (1) {
@@ -209,31 +206,30 @@ module.exports = ({context, github}) => {
                     break
                 }
             }
-        }
-        console.log("commits: ", JSON.stringify(issues.commits))
-        for (let branch of issues.branches) {
-            let body = [
-                `owner: ${issues.owner}`,
-                `repo: ${issues.repo}`,
-                `original-pr: ${issues.pr}`,
-                `branch: ${branch.name}`,
-                `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
-                `commits:`,
-                ...issues.commits,
-            ]
-            const reply = await github.issues.create({
-                owner: central_repo_owner,
-                repo: central_repo_repo,
-                title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
-                body: body.join("\n"),
-            })
-            console.log("issue create reply:", reply)
-            const reply2 = await github.projects.createCard({
-                column_id: central_pending_column_id,
-                content_id: reply.data.id,
-                content_type: "Issue",
-            })
-            console.log("card create reply:", reply2)
+            for (let branch of issues.branches) {
+                let body = [
+                    `owner: ${issues.owner}`,
+                    `repo: ${issues.repo}`,
+                    `original-pr: ${issues.pr}`,
+                    `branch: ${branch.name}`,
+                    `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
+                    `commits:`,
+                    ...issues.commits,
+                ]
+                const reply = await github.issues.create({
+                    owner: central_repo_owner,
+                    repo: central_repo_repo,
+                    title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
+                    body: body.join("\n"),
+                })
+                console.log("issue create reply:", reply)
+                const reply2 = await github.projects.createCard({
+                    column_id: central_pending_column_id,
+                    content_id: reply.data.id,
+                    content_type: "Issue",
+                })
+                console.log("card create reply:", reply2)
+            }
         }
     })();
 }
