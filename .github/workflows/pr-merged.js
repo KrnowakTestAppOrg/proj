@@ -4,7 +4,7 @@ module.exports = ({context, github}) => {
         const bot_name = "krnowak-test-bot"
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
-        const central_pending_column_id = "9618257"
+        const central_pending_column_id = 9723463
         try {
             await github.pulls.checkIfMerged({
                 owner: context.repo.owner,
