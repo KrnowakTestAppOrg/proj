@@ -98,6 +98,7 @@ module.exports = ({context, github}) => {
         const ps_no = 1
         const ps_yes = 2
         let propagation_status = ps_unknown
+        let propagation_mixed_warned = false
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
                 console.log(line, "not a command line")
@@ -108,7 +109,10 @@ module.exports = ({context, github}) => {
             const [cmd, ...rest] = line.split(/\s+/)
             if (cmd === "no-propagate") {
                 if (propagation_status === ps_yes) {
-                    console.log("mixed propagation commands")
+                    if (!propagation_mixed_warned) {
+                        console.log("mixed propagation commands")
+                        propagation_mixed_warned = true
+                    }
                     continue
                 }
                 propagation_status = ps_no
@@ -130,7 +134,10 @@ module.exports = ({context, github}) => {
             }
             if (cmd === "propagate") {
                 if (propagation_status === ps_no) {
-                    console.log("mixed propagation commands")
+                    if (!propagation_mixed_warned) {
+                        console.log("mixed propagation commands")
+                        propagation_mixed_warned = true
+                    }
                     continue
                 }
                 propagation_status = ps_yes
