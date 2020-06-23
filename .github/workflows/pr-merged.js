@@ -2,6 +2,8 @@ module.exports = ({context, github}) => {
     (async () => {
         // configured stuff
         const bot_name = "krnowak-test-bot"
+        const central_repo_owner = "KrnowakTestAppOrg"
+        const central_repo_repo = "central"
         const central_pending_column_id = 9723463
         try {
             await github.pulls.checkIfMerged({
@@ -82,6 +84,8 @@ module.exports = ({context, github}) => {
         // date_spec: nope, asap, \d+[mwd] (month, week, day), yyyy-mm-dd
         const prefix = `@${bot_name}:`
         let issues = {
+            owner: context.repo.owner,
+            repo: context.repo.repo,
             pr: context.payload.pull_request.number,
             branches: [], // { name: , date: , }
             commits: [],
@@ -209,6 +213,8 @@ module.exports = ({context, github}) => {
         console.log("commits: ", JSON.stringify(issues.commits))
         for (let branch of issues.branches) {
             let body = [
+                `owner: ${issues.owner}`,
+                `repo: ${issues.repo}`,
                 `original-pr: ${issues.pr}`,
                 `branch: ${branch.name}`,
                 `date: ${branch.date.getFullYear()}-${branch.date.getMonth()+1}-${branch.date.getDate()}`,
@@ -216,9 +222,9 @@ module.exports = ({context, github}) => {
                 ...issues.commits,
             ]
             const reply = await github.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `Propagate PR ${issues.pr} to ${branch.name}`,
+                owner: central_repo_owner,
+                repo: central_repo_repo,
+                title: `Propagate PR ${issues.pr} from ${issues.owner}/${issues.repo} to ${branch.name}`,
                 body: body.join("\n"),
             })
             console.log("issue create reply:", reply)
