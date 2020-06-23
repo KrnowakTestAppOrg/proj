@@ -82,6 +82,19 @@ module.exports = ({context, github}) => {
             if (cmd === "ignore") {
                 return
             }
+            if (cmd === "close") {
+                if (rest.length !== 1) {
+                    messages.push(`expected only a number after "close" command in "${line}"`)
+                    continue
+                }
+                const issue_number = rest[0]
+                if (isNaN(issue_number)) {
+                    messages.push(`"${issue_number}" in "${line}" is not a number`)
+                    continue
+                }
+                messages.push(`Will close ${central_repo_owner}/${central_repo_repo}#${issue_number}`)
+                continue
+            }
             if (cmd === "propagate") {
                 const periods = rest.join(" ").split(",")
                 for (let period of periods) {

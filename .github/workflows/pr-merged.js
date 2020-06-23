@@ -90,6 +90,7 @@ module.exports = ({context, github}) => {
             branches: [], // { name: , date: , }
             commits: [],
         }
+        let closings = []
         for (let line of lines) {
             if (!line.startsWith(prefix)) {
                 console.log(line, "not a command line")
@@ -101,6 +102,19 @@ module.exports = ({context, github}) => {
             if (cmd === "ignore") {
                 console.log("ignore command spotted")
                 return
+            }
+            if (cmd === "close") {
+                if (rest.length !== 1) {
+                    console.log(`close command invalid`)
+                    continue
+                }
+                const issue_number = rest[0]
+                if (isNaN(issue_number)) {
+                    console.log(`"${issue_number}" in close command is not a number`)
+                    continue
+                }
+                closings.push(issue_number)
+                continue
             }
             if (cmd === "propagate") {
                 console.log("propagate line spotted")
@@ -228,6 +242,14 @@ module.exports = ({context, github}) => {
                     content_type: "Issue",
                 })
             }
+        }
+        for (let issue_number of closings) {
+            await github.issues.update({
+                owner: central_repo_owner,
+                repo: central_repo_repo,
+                issue_number: issue_number,
+                state: "closed",
+            })
         }
     })();
 }
