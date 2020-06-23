@@ -109,7 +109,7 @@ module.exports = ({context, github}) => {
                     continue
                 }
                 const issue_number = match[1]
-                messages.push(`Will close ${central_repo_owner}/${central_repo_repo}#${issue_number}`)
+                messages.push(`Will close patch tracking issue ${issue_number}.`)
                 continue
             }
             if (cmd === "propagate") {
