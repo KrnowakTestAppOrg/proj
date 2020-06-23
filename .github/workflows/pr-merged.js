@@ -5,14 +5,14 @@ module.exports = ({context, github}) => {
         const central_repo_owner = "KrnowakTestAppOrg"
         const central_repo_repo = "central"
         const central_pending_column_id = "9618257"
-        const { status: mergedStatus } = await github.pulls.checkIfMerged({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            pull_number: context.payload.pull_request.number,
-        })
-        if (mergedStatus !== 204) {
-            console.log(`PR closed (status: ${mergedStatus}), skipping`)
-            // PR got closed, not merged. Nothing to do.
+        try {
+            await github.pulls.checkIfMerged({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+            })
+        } catch (error) {
+            console.log(`PR closed, skipping`, error)
             return
         }
         let time_desc_re = /^\s*(\d+)([wdh])\s*$/
