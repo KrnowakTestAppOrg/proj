@@ -1,9 +1,8 @@
-# TODO: trigger it on pull request being pushed to again
 name: pr-filed
 
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, reopened, synchronized]
     branches:
       - flatcar-master
       - flatcar-master-alpha
