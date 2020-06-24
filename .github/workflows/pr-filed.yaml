@@ -14,10 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          repository: KrnowakTestAppOrg/patch-tracking
+          token: ${{secrets.BOTS_PAT}}
       - uses: actions/github-script@v2
         with:
           github-token: ${{secrets.BOTS_PAT}}
           script: |
             const path = require('path')
-            const scriptPath = path.resolve('./.github/workflows/pr-filed.js')
+            const scriptPath = path.resolve('./pr-filed.js')
             require(scriptPath)({context, github})
